@@ -1,8 +1,11 @@
 const path = require('path');
 const http = require('http');
-
+var ip =require('ip')
 const express = require('express');
 const socketio = require('socket.io');
+var qr = require('qr-image');
+
+
 
 const { generateMessage, generateLocationMessage } = require('../src/utils/message');
 const { addUser, removeUser, getUser, getUsersInRoom } = require('../src/utils/users');
@@ -15,10 +18,12 @@ const server = http.createServer(app);
 // now io accesses the web socket based http server
 // adds web sockets to the existing http server
 const io = socketio(server);
-
+// my ip address
 // add listener on the server for any new web socket connection
 io.on('connection', (socket) => {
-
+    var qr_svg = qr.image(ip.address()+':3000', { type: 'svg' });
+    qr_svg.pipe(require('fs').createWriteStream('./public/img/qrcode.svg'));
+    socket.emit('ip',ip.address())
     // Creating and adding users to a room
     socket.on('join', ({ username, room }, callback) => {
         const { error, user } = addUser({id: socket.id, username, room});

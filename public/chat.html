@@ -8,7 +8,8 @@
 
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="img/favicon.png">
-    <title>Chat App</title>
+    <title>DanIRC</title>
+   
 </head>
 <body>
     <div class="header">
@@ -17,8 +18,10 @@
             <div class="line2"></div>
             <div class="line3"></div>
         </div>
-        <h2>Verbose</h2>
+        <h2>DanIRC</h2>
     </div>
+ 
+
     <div class="chat">
         <div id="sidebar" class="chat__sidebar">
 
@@ -30,12 +33,33 @@
                     <input type="text" placeholder="Write something" name="message" required autocomplete="off"/>
                     <button type="submit">Send</button>        
                 </form>
-                <button id="location">Send Location</button>
+               <button id="location">Send Location</button>
+               <button id="image">Send Image</button>
+              
             </div>
         </div>
     </div>
+  
+    <div id="overlay" onclick="off()">
+        <div id="qrcode"> </div>
+        <div id='qr'>This is a local server</div>
+      </div>
 
-    <!-- Mustache Templates -->
+     
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+  <span class="close">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
+     
+          <!-- Mustache Templates -->
     <script id="message-template-other" type="text/html">
         <div class="message">
             <p>
@@ -53,6 +77,25 @@
                 <span class="message__meta">{{createdAt}}</span>
             </p>
             <p>{{message}}</p>
+        </div>
+    </script>
+    
+    <script id="image-template" type="text/html">
+        <div class="message" align="right">
+            <p>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p><i><a href="{{url}}" target="_blank">My Current Location</a></i></p>
+        </div>
+
+    </script><script id="image-template-mine" type="text/html">
+        <div class="message" align="right">
+            <p>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p><i><a href="{{url}}" target="_blank">My Current Location</a></i></p>
         </div>
     </script>
 
@@ -73,11 +116,13 @@
                 <span class="message__meta">{{createdAt}}</span>
             </p>
             <p><i><a href="{{url}}" target="_blank">My Current Location</a></i></p>
+            <p><img src="{{src}}" target="_blank"></p>
         </div>
     </script>
-
+    <img id="myImg" src="./img/qrcode.svg" alt="QR">
     <script id="sidebar-template" type="text/html">
-        <h1 class="room-title">{{room}}</h1>
+        
+        <h1 class="room-title" onclick="nostros()" >{{room}}  <img id="scan" src="./img/qr-code.png" ></h1>
         <h2 class="list-title">Users</h2>
         <ul class="users">
             {{#users}}

@@ -1,5 +1,6 @@
 // single fn to indicate we want to connect with a web socket
-const socket = io();
+var socket = io();
+
 
 // DOM elements
 const $messageForm = document.querySelector('#form');
@@ -21,9 +22,15 @@ const locationTemplateMine = document.querySelector('#location-template-mine').i
 
 const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
-// Parses the attached query strings(location.search) in the page for username and room-name
-const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
+// Parses the attached query strings(location.search) in the page for username and room-name
+const { username, room, localserver } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+var ip;
+if(!localserver){
+socket=io('https://dantrirc.glitch.me/')
+document.getElementById('qr').innerHTML="This is the central server";
+
+}
 if (!username || !room) {
     // if one tries to use chat without logging in, redirect to home
     location.href = '/';
@@ -37,6 +44,49 @@ if (!username || !room) {
         }
     });
 }
+
+var modal = document.getElementById("myModal");
+
+// Get the image and insert it inside the modal - use its "alt" text as a caption
+var img = document.getElementById("myImg");
+var modalImg = document.getElementById("img01");
+var roomba= document.getElementById("roomba")
+var captionText = document.getElementById("caption");
+function nostros(){
+    if(localserver){
+  modal.style.display = "block";
+  modalImg.src = img.src;
+  captionText.innerHTML = img.alt;}
+  else{
+      modal.style.display = "block";
+  captionText.innerHTML = "To acess a central server please install the client";
+  }
+}
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+} 
+
+// Show and hide nav
+$burger.addEventListener('click', () => {
+
+    $burger.classList.toggle('toggle');
+
+    if ($sidebar.style.width === '225px') {
+        //close the nav
+        $sidebar.style.width = '0px';
+        $sidebar.style.transform = 'translateX(-100%)';
+
+    } else {
+        $sidebar.style.width = '225px';
+        $sidebar.style.transform = 'translateX(0%)';    
+    }
+
+})
 
 // Autoscrolling for the user
 const autoscroll = () => {
@@ -113,6 +163,18 @@ socket.on('locationMessage', (message) => {
     autoscroll();
 });
 
+function on() {
+    document.getElementById("overlay").style.display = "block";
+  }
+  
+  function off() {
+    document.getElementById("overlay").style.display = "none";
+  } 
+socket.on('ip',(ip) => {
+ip=ip;
+document.getElementById('qrcode').innerHTML = ip;
+on();
+})
 // To display sidebar contents
 socket.on('roomData', ({ room, users}) => {
     const html = Mustache.render(sidebarTemplate, {
@@ -180,20 +242,4 @@ $locationButton.addEventListener('click', () => {
 
 });
 
-// Show and hide nav
-$burger.addEventListener('click', () => {
-
-    $burger.classList.toggle('toggle');
-
-    if ($sidebar.style.width === '225px') {
-        //close the nav
-        $sidebar.style.width = '0px';
-        $sidebar.style.transform = 'translateX(-100%)';
-
-    } else {
-        $sidebar.style.width = '225px';
-        $sidebar.style.transform = 'translateX(0%)';    
-    }
-
-})
 
