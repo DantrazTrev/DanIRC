@@ -25,6 +25,7 @@ const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 // Parses the attached query strings(location.search) in the page for username and room-name
 const { username, room, localserver } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+console.log(room.hashCode());
 var ip;
 if(!localserver){
 socket=io('https://dantrirc.glitch.me/')
@@ -35,7 +36,10 @@ if (!username || !room) {
     // if one tries to use chat without logging in, redirect to home
     location.href = '/';
 
-} else {
+} 
+
+else
+{
     // To make a user join a particular room
     socket.emit('join', { username, room }, (error) => {
         if (error) {

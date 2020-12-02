@@ -21,7 +21,7 @@ const io = socketio(server);
 // my ip address
 // add listener on the server for any new web socket connection
 io.on('connection', (socket) => {
-    var qr_svg = qr.image(ip.address()+':3000', { type: 'svg' });
+    var qr_svg = qr.image(ip.address()+':3000/guest.html', { type: 'svg' });
     qr_svg.pipe(require('fs').createWriteStream('./public/img/qrcode.svg'));
     socket.emit('ip',ip.address())
     // Creating and adding users to a room
