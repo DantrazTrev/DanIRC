@@ -4,7 +4,8 @@ var ip =require('ip')
 const express = require('express');
 const socketio = require('socket.io');
 var qr = require('qr-image');
-
+var RTCMultiConnection = require('rtcmulticonnection')
+var connection = new RTCMultiConnection();
 
 
 const { generateMessage, generateLocationMessage } = require('../src/utils/message');
@@ -47,7 +48,7 @@ io.on('connection', (socket) => {
 
         callback();
     })
-
+   
     // Listens for any client trying to send a new message
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id);

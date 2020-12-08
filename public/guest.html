@@ -13,16 +13,27 @@
 <body>  
     <div class="centered-form">
         <div class="centered-form__box">
-            <h1>Join</h1>
-            <form action="/chat.html">
+            <h1>Guests</h1>
+            <h6>boo you've not installed the client</h6>
+            <br>
+            <form name='Ges' action="/chat.html" onsubmit="Notra()">
                 <label>Display Name</label>
-                <input type="text" name="username" placeholder="Display name" required />
+                <input type="text" name="username" placeholder="Display name" required  x/>
                 <label>Invite Code</label>
-                <input type="text" name="invite" placeholder="JXQYWWM" required />
+                <input type="text" name="room" placeholder="JXQYWWM" required />
+                <input type="checkbox" name="localserver" checked hidden=true>
+                <input type="checkbox" name="invite" checked hidden=true>
+                
                 <button>Join</button>
             </form>
         </div>
         
     </div>
+    <script>
+        function Notra()
+        {
+            document.forms['Ges']['room'].value=atob(document.forms['Ges']['room'].value)
+        }
+    </script>
 </body>
 </html>

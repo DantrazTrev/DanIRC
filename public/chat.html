@@ -122,8 +122,8 @@
     <img id="myImg" src="./img/qrcode.svg" alt="QR">
     <script id="sidebar-template" type="text/html">
         
-        <h1 class="room-title" onclick="nostros()" >{{room}}  <img id="scan" src="./img/qr-code.png" ></h1>
-        <h2 class="list-title">Users</h2>
+        <h1 class="room-title" onclick="nostros()" >{{alias}}  <img id="scan" src="./img/qr-code.png" ></h1>
+        <h2 class="list-title">Users <img id="audio" src="./img/mic-off.svg" size="75%" onclick="audio()"></h2> 
         <ul class="users">
             {{#users}}
                 <li>{{username}}</li>
@@ -136,6 +136,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
     
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/RTCMultiConnection.min.js"></script>
     <script src="js/chat.js"></script>
+   
+
 </body>
 </html>

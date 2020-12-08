@@ -1,5 +1,22 @@
 // single fn to indicate we want to connect with a web socket
 var socket = io();
+var connection = new RTCMultiConnection();
+
+// this line is VERY_important
+connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+connection.mediaConstraints = {
+    audio: true,
+    video: false
+};
+
+// all below lines are optional; however recommended.
+
+
+
+var constraints = {
+    video: false,
+    audio: true,
+};
 
 
 // DOM elements
@@ -24,8 +41,12 @@ const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 
 // Parses the attached query strings(location.search) in the page for username and room-name
-const { username, room, localserver } = Qs.parse(location.search, { ignoreQueryPrefix: true });
-console.log(room.hashCode());
+var { username, room, localserver, invite } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+
+var alias=room
+room=btoa(room)
+
+
 var ip;
 if(!localserver){
 socket=io('https://dantrirc.glitch.me/')
@@ -34,7 +55,7 @@ document.getElementById('qr').innerHTML="This is the central server";
 }
 if (!username || !room) {
     // if one tries to use chat without logging in, redirect to home
-    location.href = '/';
+    location.href = '/login.html';
 
 } 
 
@@ -44,7 +65,7 @@ else
     socket.emit('join', { username, room }, (error) => {
         if (error) {
             alert(error);
-            location.href = '/';
+            location.href = '/login.html';
         }
     });
 }
@@ -60,7 +81,7 @@ function nostros(){
     if(localserver){
   modal.style.display = "block";
   modalImg.src = img.src;
-  captionText.innerHTML = img.alt;}
+  captionText.innerHTML = "Invite Code:"+room;}
   else{
       modal.style.display = "block";
   captionText.innerHTML = "To acess a central server please install the client";
@@ -182,7 +203,7 @@ on();
 // To display sidebar contents
 socket.on('roomData', ({ room, users}) => {
     const html = Mustache.render(sidebarTemplate, {
-        room,
+        alias,
         users
     });
     $sidebar.innerHTML = html;
@@ -246,4 +267,51 @@ $locationButton.addEventListener('click', () => {
 
 });
 
+function gotMessageFromServer(fromId, message) {
 
+    //Parse the incoming signal
+    var signal = JSON.parse(message)
+
+    //Make sure it's not coming from yourself
+    if(fromId != socketId) {
+
+        if(signal.sdp){            
+            connections[fromId].setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function() {                
+                if(signal.sdp.type == 'offer') {
+                    connections[fromId].createAnswer().then(function(description){
+                        connections[fromId].setLocalDescription(description).then(function() {
+                            socket.emit('signal', fromId, JSON.stringify({'sdp': connections[fromId].localDescription}));
+                        }).catch(e => console.log(e));        
+                    }).catch(e => console.log(e));
+                }
+            }).catch(e => console.log(e));
+        }
+    
+        if(signal.ice) {
+            connections[fromId].addIceCandidate(new RTCIceCandidate(signal.ice)).catch(e => console.log(e));
+        }                
+    }
+}
+
+
+function audio() {
+
+connection.session = {
+    audio: true,
+    video: false
+};
+
+connection.sdpConstraints.mandatory = {
+    OfferToReceiveAudio: true,
+    OfferToReceiveVideo: false
+};
+    connection.onstream = function(event) {
+        document.body.appendChild( event.mediaElement );
+    };
+    
+    var predefinedRoomId = room;
+    
+    connection.openOrJoin(predefinedRoomId);
+    document.getElementById("audio").src='./img/mic.svg'
+    
+}

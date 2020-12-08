@@ -16,7 +16,7 @@ input {
 
 body {
     line-height: 1.4;
-    font-family: 'Raleway';
+    font-family: "ubuntu mono";
     color: #333333;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -282,6 +282,7 @@ button:disabled {
     color: #0070CC;
 }
 
+
 #overlay {
     position: fixed; /* Sit on top of the page content */
     display: none; /* Hidden by default */
@@ -355,9 +356,9 @@ button:disabled {
   /* The Close Button */
   .close {
     position: absolute;
-    top: 15px;
+    top: 25px;
     right: 35px;
-    color: #f1f1f1;
+    color: #000000;
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
