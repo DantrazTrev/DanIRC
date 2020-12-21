@@ -60,8 +60,17 @@ button:disabled {
 
 /* Join Page Styles */
 
+.preload * {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+}
+
 .centered-form {
-    background: #333744;
+   
+  background: url("/img/ng-colab-space_night.gif");
+  background-size: cover;
     width: 100vw;
     height: 100vh;   
     display: flex;
@@ -86,6 +95,7 @@ button:disabled {
 }
 
 /* Header */
+
 .header {
     position: sticky;
     top: 0;
